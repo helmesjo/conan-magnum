@@ -19,6 +19,7 @@ class LibnameConan(ConanFile):
     exports = ["LICENSE.md"]
     exports_sources = ["CMakeLists.txt"]
     generators = "cmake"
+    short_paths = True  # Some folders go out of the 260 chars path length scope (windows)
 
     # Options may need to change depending on the packaged library.
     settings = "os", "arch", "compiler", "build_type"
