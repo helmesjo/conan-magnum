@@ -157,7 +157,7 @@ class LibnameConan(ConanFile):
             add_cmake_option(attr, value)
 
         add_cmake_option("BUILD_STATIC", not self.options.shared)
-        add_cmake_option("BUILD_STATIC_PIC", not self.options.shared and self.options.fPIC)
+        add_cmake_option("BUILD_STATIC_PIC", not self.options.shared and self.options.get_safe("fPIC"))
 
         cmake.configure(build_folder=self._build_subfolder)
 
