@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from conans import ConanFile, CMake, tools
-from conans.errors import ConanException
 import os
 
 
@@ -115,7 +114,11 @@ class LibnameConan(ConanFile):
     _build_subfolder = "build_subfolder"
 
     requires = (
-        "corrade/2018.10@helmesjo/stable"
+        "corrade/2018.10@helmesjo/stable",
+    )
+
+    build_requires = (
+        "glfw/3.2.1@bincrafters/stable"
     )
 
     def config_options(self):
