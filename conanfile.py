@@ -123,30 +123,25 @@ class LibnameConan(ConanFile):
         if tools.os_info.is_linux:
             if tools.os_info.with_apt:
                 installer = tools.SystemPackageTool()
-                if self.settings.arch == "x86":
-                    arch_suffix = ':i386'
-                else:
-                    arch_suffix = ''
 
-                installer.install("%s%s" % ("libgl1-mesa-dev", arch_suffix))
-                installer.install("%s%s" % ("libX11-6:i386", arch_suffix))
-                installer.install("%s%s" % ("libxcb-glx0:i386", arch_suffix))
-                installer.install("%s%s" % ("libdrm-dev:i386", arch_suffix))
-                installer.install("%s%s" % ("libxdamage-dev:i386", arch_suffix))
-                installer.install("%s%s" % ("libx11-xcb-dev:i386", arch_suffix))
-                installer.install("%s%s" % ("libglapi-mesa:i386", arch_suffix))
-                installer.install("%s%s" % ("libxext6:i386", arch_suffix))
-                installer.install("%s%s" % ("libxxf86vm-dev:i386", arch_suffix))
+                # There are a lot of issues related to cross-building OpenGL apps from x86_64 to x86,
+                # so for now we just install both x86_64 & x86 OpenGL development libs (as this seems to work in most cases).
+                # Related (?): 
+                # * https://bugs.launchpad.net/ubuntu/+source/mesa/+bug/949606
+                # * https://bugs.launchpad.net/ubuntu/+source/mesa/+bug/1317113
+                # * http://ysflight.in.coocan.jp/programming/crossCompile/e.html
+                arch_suffixes = ['', ':i386']
+                for arch_suffix in arch_suffixes:
+                    installer.install("%s%s" % ("libgl1-mesa-dev", arch_suffix))
+
             elif tools.os_info.with_yum:
                 installer = tools.SystemPackageTool()
-                # if self.settings.arch == "x86" and tools.detected_architecture() == "x86_64":
-                #     arch_suffix = '.i686'
-                # else:
-                #   arch_suffix = ''
-                arch_suffixes = ['', '.i686']
+                if self.settings.arch == "x86" and tools.detected_architecture() == "x86_64":
+                    arch_suffix = '.i686'
+                else:
+                  arch_suffix = ''
                 
-                for arch_suffix in arch_suffixes:
-                    installer.install("%s%s" % ("mesa-libGL-devel", arch_suffix))
+                installer.install("%s%s" % ("mesa-libGL-devel", arch_suffix))
             else:
                 self.output.warn("Could not determine package manager, skipping Linux system requirements installation.")
 
@@ -159,7 +154,6 @@ class LibnameConan(ConanFile):
 
     def configure(self):
         self.options['corrade'].add_option('build_deprecated', self.options.build_deprecated)
-        #self.options['corrade'].add_option('with_pluginmanager', True)
 
     def requirements(self):
         if self.options.with_sdl2application:
