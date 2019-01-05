@@ -133,11 +133,10 @@ class LibnameConan(ConanFile):
                 #for arch_suffix in arch_suffixes:
                     #installer.install("%s%s" % ("mesa-utils-extra", arch_suffix))
                     #installer.install("%s%s" % ("libglapi-mesa", arch_suffix))
-                installer.install("%s%s" % ("mesa-utils", arch_suffix))
+                installer.install("%s%s" % ("libgl1-mesa-glx", arch_suffix))
                 installer.install("%s%s" % ("libgl1-mesa-dev", arch_suffix))
                 installer.install("%s%s" % ("libglu1-mesa-dev", arch_suffix))
-                installer.install("%s%s" % ("freeglut3-dev", arch_suffix))
-                installer.install("%s%s" % ("mesa-common-dev", arch_suffix))
+                #installer.install("%s%s" % ("mesa-common-dev", arch_suffix))
             elif tools.os_info.with_yum:
                 installer = tools.SystemPackageTool()
                 if self.settings.arch == "x86" and tools.detected_architecture() == "x86_64":
