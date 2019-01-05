@@ -123,31 +123,27 @@ class LibnameConan(ConanFile):
         if tools.os_info.is_linux:
             if tools.os_info.with_apt:
                 installer = tools.SystemPackageTool()
-                if self.settings.arch == "x86":
-                    arch_suffix = ':i386'
-                    installer.install("g++-multilib")
-                else:
-                    arch_suffix = ''
-                #arch_suffixes = ['', ':i386']
+                # if self.settings.arch == "x86" and tools.detected_architecture() == "x86_64":
+                #     arch_suffix = ':i386'
+                # else:
+                #     arch_suffix = ''
+                arch_suffixes = ['', ':i386']
 
-                #for arch_suffix in arch_suffixes:
-                    #installer.install("%s%s" % ("mesa-utils-extra", arch_suffix))
-                    #installer.install("%s%s" % ("libglapi-mesa", arch_suffix))
-                installer.install("%s%s" % ("libgl1-mesa-glx", arch_suffix))
-                installer.install("%s%s" % ("libgl1-mesa-dev", arch_suffix))
-                installer.install("%s%s" % ("libglu1-mesa-dev", arch_suffix))
-                #installer.install("%s%s" % ("mesa-common-dev", arch_suffix))
+                for arch_suffix in arch_suffixes:
+                    #mesa-utils-extra, libgl1-mesa-dev, libglapi-mesa
+                    installer.install("%s%s" % ("libgl1-mesa-dev", arch_suffix))
+                    installer.install("%s%s" % ("libglu1-mesa-dev", arch_suffix))
             elif tools.os_info.with_yum:
                 installer = tools.SystemPackageTool()
-                if self.settings.arch == "x86" and tools.detected_architecture() == "x86_64":
-                    arch_suffix = '.i686'
-                else:
-                  arch_suffix = ''
-                #arch_suffixes = ['', '.i686']
+                # if self.settings.arch == "x86" and tools.detected_architecture() == "x86_64":
+                #     arch_suffix = '.i686'
+                # else:
+                #   arch_suffix = ''
+                arch_suffixes = ['', '.i686']
                 
-                #for arch_suffix in arch_suffixes:
-                installer.install("%s%s" % ("mesa-libGL-devel", arch_suffix))
-                installer.install("%s%s" % ("mesa-libGLU-devel", arch_suffix))
+                for arch_suffix in arch_suffixes:
+                    installer.install("%s%s" % ("mesa-libGL-devel", arch_suffix))
+                    installer.install("%s%s" % ("mesa-libGLU-devel", arch_suffix))
             else:
                 self.output.warn("Could not determine package manager, skipping Linux system requirements installation.")
 
