@@ -123,17 +123,13 @@ class LibnameConan(ConanFile):
         if tools.os_info.is_linux:
             if tools.os_info.with_apt:
                 installer = tools.SystemPackageTool()
-                # if self.settings.arch == "x86" and tools.detected_architecture() == "x86_64":
-                #     arch_suffix = ':i386'
-                # else:
-                #     arch_suffix = ''
-                arch_suffixes = ['', ':i386']
+                if self.settings.arch == "x86":
+                    arch_suffix = ':i386'
+                    installer.install("g++-multilib")
+                else:
+                    arch_suffix = ''
 
-                installer.install("g++-multilib")
-
-                for arch_suffix in arch_suffixes:
-                    #mesa-utils-extra, libgl1-mesa-dev, libglapi-mesa, libgl1-mesa-glx
-                    installer.install("%s%s" % ("libgl1-mesa-dev", arch_suffix))
+                installer.install("%s%s" % ("libgl1-mesa-dev", arch_suffix))
             elif tools.os_info.with_yum:
                 installer = tools.SystemPackageTool()
                 # if self.settings.arch == "x86" and tools.detected_architecture() == "x86_64":
