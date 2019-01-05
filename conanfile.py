@@ -123,7 +123,7 @@ class LibnameConan(ConanFile):
         if tools.os_info.is_linux:
             if tools.os_info.with_apt:
                 installer = tools.SystemPackageTool()
-                if self.settings.arch == "x86" and tools.detected_architecture() == "x86_64":
+                if self.settings.arch == "x86":
                     arch_suffix = ':i386'
                     installer.install("g++-multilib")
                 else:
