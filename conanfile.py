@@ -3,7 +3,34 @@
 
 from conans import ConanFile, CMake, tools
 import os
+import re
 
+def insert_string_at_index(file, insertString, lineIndex):
+    f = open(file, "r")
+    contents = f.readlines()
+    f.close()
+
+    contents.insert(lineIndex, insertString)
+
+    f = open(file, "w")
+    contents = "".join(contents)
+    f.write(contents)
+    f.close()
+
+def replace(file, pattern, subst):
+    # Read contents from file as a single string
+    file_handle = open(file, 'r')
+    file_string = file_handle.read()
+    file_handle.close()
+
+    # Use RE package to allow for replacement (also allowing for (multiline) REGEX)
+    file_string = (re.sub(pattern, "{} # <-- Line edited by conan package -->".format(subst), file_string))
+
+    # Write contents to file.
+    # Using mode 'w' truncates the file.
+    file_handle = open(file, 'w')
+    file_handle.write(file_string)
+    file_handle.close()
 
 class LibnameConan(ConanFile):
     name = "magnum"
@@ -137,10 +164,13 @@ class LibnameConan(ConanFile):
                 # * https://bugs.launchpad.net/ubuntu/+source/mesa/+bug/1317113
                 # * http://ysflight.in.coocan.jp/programming/crossCompile/e.html
 
-                arch_suffixes = ['', ':i386']
-                for arch_suffix in arch_suffixes:
-                    for package in packages:
-                        installer.install("%s%s" % (package, arch_suffix))
+                if self.settings.arch == "x86" and tools.detected_architecture() == "x86_64":
+                    arch_suffix = ':i386'
+                else:
+                    arch_suffix = ''
+
+                for package in packages:
+                    installer.install("%s%s" % (package, arch_suffix))
 
             elif tools.os_info.with_yum:
                 installer = tools.SystemPackageTool()
@@ -170,6 +200,7 @@ class LibnameConan(ConanFile):
 
     def configure(self):
         self.options['corrade'].add_option('build_deprecated', self.options.build_deprecated)
+        self.options['corrade'].add_option('with_pluginmanager', True)
 
     def requirements(self):
         if self.options.with_sdl2application:
@@ -182,6 +213,14 @@ class LibnameConan(ConanFile):
 
         # Rename to "source_subfolder" is a convention to simplify later steps
         os.rename(extracted_dir, self._source_subfolder)
+
+        # Insert properties that tell find_package to look for 32- or 64-bit (properties are 
+        # not the same as cmake defines, and must be inserted into cmake script)
+        # Will be assigned values in config step
+        root_cmakelist_file = os.path.join(self._source_subfolder, "CMakeLists.txt")
+        print(root_cmakelist_file)
+        patch_string = "set_property(GLOBAL PROPERTY FIND_LIBRARY_USE_LIB32_PATHS <VALUE>)\nset_property(GLOBAL PROPERTY FIND_LIBRARY_USE_LIB64_PATHS <VALUE>)\n"
+        insert_string_at_index(root_cmakelist_file, patch_string, 0)
 
     def _configure_cmake(self):
         cmake = CMake(self)
@@ -198,6 +237,16 @@ class LibnameConan(ConanFile):
 
         add_cmake_option("BUILD_STATIC", not self.options.shared)
         add_cmake_option("BUILD_STATIC_PIC", not self.options.shared and self.options.get_safe("fPIC"))
+        
+        if self.settings.arch == "x86_64":
+            add_cmake_option("LIB_SUFFIX", 64)
+        else:
+            add_cmake_option("LIB_SUFFIX", 32)
+
+        # Help cmake properly find 32/64 bit libs (this is very naive and will most definitely not work on all platforms)
+        root_cmakelist_file = os.path.join(self._source_subfolder, "CMakeLists.txt")
+        replace(root_cmakelist_file, r"FIND_LIBRARY_USE_LIB32_PATHS .*\)", "FIND_LIBRARY_USE_LIB32_PATHS {})".format(self.settings.arch == "x86"))
+        replace(root_cmakelist_file, r"FIND_LIBRARY_USE_LIB64_PATHS .*\)", "FIND_LIBRARY_USE_LIB64_PATHS {})".format(self.settings.arch == "x86_64"))
 
         cmake.configure(build_folder=self._build_subfolder)
 
