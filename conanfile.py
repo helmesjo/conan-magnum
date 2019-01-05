@@ -132,7 +132,6 @@ class LibnameConan(ConanFile):
                 for arch_suffix in arch_suffixes:
                     #mesa-utils-extra, libgl1-mesa-dev, libglapi-mesa
                     installer.install("%s%s" % ("libgl1-mesa-dev", arch_suffix))
-                    installer.install("%s%s" % ("libglu1-mesa-dev", arch_suffix))
             elif tools.os_info.with_yum:
                 installer = tools.SystemPackageTool()
                 # if self.settings.arch == "x86" and tools.detected_architecture() == "x86_64":
@@ -143,7 +142,6 @@ class LibnameConan(ConanFile):
                 
                 for arch_suffix in arch_suffixes:
                     installer.install("%s%s" % ("mesa-libGL-devel", arch_suffix))
-                    installer.install("%s%s" % ("mesa-libGLU-devel", arch_suffix))
             else:
                 self.output.warn("Could not determine package manager, skipping Linux system requirements installation.")
 
