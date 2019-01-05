@@ -118,6 +118,26 @@ class LibnameConan(ConanFile):
         "corrade/2018.10@helmesjo/stable"
     )
 
+    def system_package_architecture(self):
+        if tools.os_info.with_apt:
+            if self.settings.arch == "x86":
+                return ':i386'
+            elif self.settings.arch == "x86_64":
+                return ':amd64'
+            elif self.settings.arch == "armv6" or self.settings.arch == "armv7":
+                return ':armel'
+            elif self.settings.arch == "armv7hf":
+                return ':armhf'
+            elif self.settings.arch == "armv8":
+                return ':arm64'
+
+        if tools.os_info.with_yum:
+            if self.settings.arch == "x86":
+                return '.i686'
+            elif self.settings.arch == 'x86_64':
+                return '.x86_64'
+        return ""
+
     def system_requirements(self):
         # Install required OpenGL stuff on linux
         if tools.os_info.is_linux:
@@ -130,26 +150,14 @@ class LibnameConan(ConanFile):
                 if self.options.target_gles:
                     packages.append("libgles1-mesa-dev")
 
-                # There are a lot of issues related to cross-building OpenGL apps from x86_64 to x86,
-                # so for now we just install both x86_64 & x86 OpenGL development libs (as this seems to work in most cases).
-                # Related (?): 
-                # * https://bugs.launchpad.net/ubuntu/+source/mesa/+bug/949606
-                # * https://bugs.launchpad.net/ubuntu/+source/mesa/+bug/1317113
-                # * http://ysflight.in.coocan.jp/programming/crossCompile/e.html
-
-                arch_suffixes = ['', ':i386']
-                for arch_suffix in arch_suffixes:
-                    for package in packages:
-                        installer.install("%s%s" % (package, arch_suffix))
+                arch_suffix = self.system_package_architecture()
+                for package in packages:
+                    installer.install("%s%s" % (package, arch_suffix))
 
             elif tools.os_info.with_yum:
                 installer = tools.SystemPackageTool()
 
-                if self.settings.arch == "x86" and tools.detected_architecture() == "x86_64":
-                    arch_suffix = '.i686'
-                else:
-                  arch_suffix = ''
-
+                arch_suffix = self.system_package_architecture()
                 packages = []
                 if self.options.target_gl:
                     packages.append("mesa-libGL-devel")
