@@ -118,28 +118,47 @@ class LibnameConan(ConanFile):
         "corrade/2018.10@helmesjo/stable"
     )
 
+    def _system_package_architecture(self):
+        if tools.os_info.with_apt:
+            if self.settings.arch == "x86":
+                return ':i386'
+            elif self.settings.arch == "x86_64":
+                return ':amd64'
+            elif self.settings.arch == "armv6" or self.settings.arch == "armv7":
+                return ':armel'
+            elif self.settings.arch == "armv7hf":
+                return ':armhf'
+            elif self.settings.arch == "armv8":
+                return ':arm64'
+
+        if tools.os_info.with_yum:
+            if self.settings.arch == "x86":
+                return '.i686'
+            elif self.settings.arch == 'x86_64':
+                return '.x86_64'
+        return ""
+
     def system_requirements(self):
         # Install required OpenGL stuff on linux
         if tools.os_info.is_linux:
+            installer = tools.SystemPackageTool()
             if tools.os_info.with_apt:
-                installer = tools.SystemPackageTool()
-                if self.settings.arch == "x86": # and tools.detected_architecture() == "x86_64":
-                    arch_suffix = ':i386'
-                else:
-                    arch_suffix = ''
+                pack_names = [
+                    "libgl1-mesa-dev", 
+                    "libglu1-mesa-dev"
+                ]
 
-                #mesa-utils-extra, libgl1-mesa-dev, libglapi-mesa
-                installer.install("%s%s" % ("libgl1-mesa-dev", arch_suffix))
-                installer.install("%s%s" % ("libglu1-mesa-dev", arch_suffix))
+                for item in pack_names:
+                    installer.install(item + self._system_package_architecture())
+
             elif tools.os_info.with_yum:
-                installer = tools.SystemPackageTool()
-                if self.settings.arch == "x86" and tools.detected_architecture() == "x86_64":
-                    arch_suffix = '.i686'
-                else:
-                  arch_suffix = ''
+                pack_names = [
+                    "mesa-libGL-devel", 
+                    "mesa-libGLU-devel"
+                ]
                 
-                installer.install("%s%s" % ("mesa-libGL-devel", arch_suffix))
-                installer.install("%s%s" % ("mesa-libGLU-devel", arch_suffix))
+                for item in pack_names:
+                    installer.install(item + self._system_package_architecture())
             else:
                 self.output.warn("Could not determine package manager, skipping Linux system requirements installation.")
 
