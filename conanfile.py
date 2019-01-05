@@ -125,11 +125,18 @@ class LibnameConan(ConanFile):
                 installer = tools.SystemPackageTool()
                 if self.settings.arch == "x86":
                     arch_suffix = ':i386'
-                    installer.install("g++-multilib")
                 else:
                     arch_suffix = ''
 
                 installer.install("%s%s" % ("libgl1-mesa-dev", arch_suffix))
+                installer.install("%s%s" % ("libX11-6:i386", arch_suffix))
+                installer.install("%s%s" % ("libxcb-glx0:i386", arch_suffix))
+                installer.install("%s%s" % ("libdrm-dev:i386", arch_suffix))
+                installer.install("%s%s" % ("libxdamage-dev:i386", arch_suffix))
+                installer.install("%s%s" % ("libx11-xcb-dev:i386", arch_suffix))
+                installer.install("%s%s" % ("libglapi-mesa:i386", arch_suffix))
+                installer.install("%s%s" % ("libxext6:i386", arch_suffix))
+                installer.install("%s%s" % ("libxxf86vm-dev:i386", arch_suffix))
             elif tools.os_info.with_yum:
                 installer = tools.SystemPackageTool()
                 # if self.settings.arch == "x86" and tools.detected_architecture() == "x86_64":
