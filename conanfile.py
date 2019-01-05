@@ -130,7 +130,8 @@ class LibnameConan(ConanFile):
                 arch_suffixes = ['', ':i386']
 
                 for arch_suffix in arch_suffixes:
-                    #mesa-utils-extra, libgl1-mesa-dev, libglapi-mesa
+                    #mesa-utils-extra, libgl1-mesa-dev, libglapi-mesa, libgl1-mesa-glx
+                    installer.install("%s%s" % ("libglapi-mesa", arch_suffix))
                     installer.install("%s%s" % ("libgl1-mesa-dev", arch_suffix))
             elif tools.os_info.with_yum:
                 installer = tools.SystemPackageTool()
