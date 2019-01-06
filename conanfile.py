@@ -11,7 +11,7 @@ class LibnameConan(ConanFile):
     description =   "Magnum — Lightweight and modular C++11/C++14 \
                     graphics middleware for games and data visualization"
     # topics can get used for searches, GitHub topics, Bintray tags etc. Add here keywords about the library
-    topics = ("conan", "corrade", "graphics", "rendering", "3d", "2d")
+    topics = ("conan", "corrade", "graphics", "rendering", "3d", "2d", "opengl")
     url = "https://github.com/helmesjo/conan-magnum"
     homepage = "https://magnum.graphics"
     author = "helmesjo <helmesjo@gmail.com>"
@@ -238,3 +238,28 @@ class LibnameConan(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = tools.collect_libs(self)
+
+        # Filter out Magnum and readd last,
+        # making sure linked order is correct.
+        libs = self.cpp_info.libs
+
+        if self.settings.build_type == "Debug":
+            magnumLib = "Magnum-d"
+        else:
+            magnumLib = "Magnum"
+        libs = [lib for lib in libs if magnumLib != lib]
+        libs.append(magnumLib)
+
+        self.cpp_info.libs = libs
+
+        if self.settings.os == "Windows":
+            if self.settings.compiler == "Visual Studio":
+                if not self.options.shared:
+                    self.cpp_info.libs.append("OpenGL32.lib")
+            else:
+                self.cpp_info.libs.append("opengl32")
+        else:
+            if self.settings.os == "Macos":
+                self.cpp_info.exelinkflags.append("-framework OpenGL")
+            elif not self.options.shared:
+                self.cpp_info.libs.append("GL")
