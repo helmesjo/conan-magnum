@@ -204,6 +204,10 @@ class LibnameConan(ConanFile):
             value = getattr(self.options, attr)
             add_cmake_option(attr, value)
 
+        # Magnum uses suffix on the resulting 'lib'-folder when running cmake.install()
+        # Set it explicitly to empty, else Magnum might set it implicitly (eg. to "64")
+        add_cmake_option("LIB_SUFFIX", "")
+
         add_cmake_option("BUILD_STATIC", not self.options.shared)
         add_cmake_option("BUILD_STATIC_PIC", not self.options.shared and self.options.get_safe("fPIC"))
 
@@ -226,15 +230,6 @@ class LibnameConan(ConanFile):
         self.copy(pattern="LICENSE", dst="licenses", src=self._source_subfolder)
         cmake = self._configure_cmake()
         cmake.install()
-        # If the CMakeLists.txt has a proper install method, the steps below may be redundant
-        # If so, you can just remove the lines below
-        include_folder = os.path.join(self._source_subfolder, "include")
-        self.copy(pattern="*", dst="include", src=include_folder)
-        self.copy(pattern="*.dll", dst="bin", keep_path=False)
-        self.copy(pattern="*.lib", dst="lib", keep_path=False)
-        self.copy(pattern="*.a", dst="lib", keep_path=False)
-        self.copy(pattern="*.so*", dst="lib", keep_path=False)
-        self.copy(pattern="*.dylib", dst="lib", keep_path=False)
 
     def package_info(self):
         self.cpp_info.libs = tools.collect_libs(self)
