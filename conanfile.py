@@ -194,6 +194,11 @@ class LibnameConan(ConanFile):
     def configure(self):
         self.options['corrade'].add_option('build_deprecated', self.options.build_deprecated)
 
+        # To fix issue with resource management, see here:
+        # https://github.com/mosra/magnum/issues/304#issuecomment-451768389
+        if self.options.shared:
+            self.options['corrade'].add_option('shared', True)
+
     def requirements(self):
         if self.options.with_sdl2application:
             self.requires("sdl2/2.0.8@bincrafters/stable")
