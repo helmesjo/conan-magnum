@@ -4,6 +4,21 @@
 from conans import ConanFile, CMake, tools
 import os
 
+def sort_libs(correct_order, libs, lib_suffix='', reverse_result=False):
+    # Add suffix for correct string matching
+    correct_order[:] = [s.__add__(lib_suffix) for s in correct_order]
+
+    result = []
+    for expectedLib in correct_order:
+        for lib in libs:
+            if expectedLib == lib:
+                result.append(lib)
+
+    if reverse_result:
+        # Linking happens in reversed order
+        result.reverse()
+
+    return result
 
 class LibnameConan(ConanFile):
     name = "magnum"
@@ -232,20 +247,42 @@ class LibnameConan(ConanFile):
         cmake.install()
 
     def package_info(self):
-        self.cpp_info.libs = tools.collect_libs(self)
-
-        # Filter out Magnum and readd last,
-        # making sure linked order is correct.
-        libs = self.cpp_info.libs
-
-        if self.settings.build_type == "Debug":
-            magnumLib = "Magnum-d"
-        else:
-            magnumLib = "Magnum"
-        libs = [lib for lib in libs if magnumLib != lib]
-        libs.append(magnumLib)
-
-        self.cpp_info.libs = libs
+        # See dependency order here: https://doc.magnum.graphics/magnum/custom-buildsystems.html
+        allLibs = [
+            #1
+            "Magnum",
+            "MagnumAnimation",
+            "MagnumMath",
+            #2
+            "MagnumTrade",
+            "MagnumMeshTools",
+            "MagnumSceneGraph",
+            "MagnumGL",
+            "MagnumVk",
+            "MagnumAudio",
+            #3
+            "MagnumPrimitives",
+            "MagnumShapes",
+            "MagnumShaders",
+            "MagnumTextureTools",
+            "MagnumGlfwApplication",
+            "MagnumGlutApplication",
+            "MagnumXEglApplication",
+            "MagnumWindowlessEglApplication",
+            "MagnumGlxApplication" ,
+            "MagnumWindowlessGlxApplication",
+            "MagnumSdl2Application"
+            "MagnumWindowlessSdl2Application",
+            #4
+            "MagnumDebugTools",
+            "MagnumOpenGLTester",
+            "MagnumText",
+        ]
+        
+        # Sort all built libs according to above, and reverse result for correct link order
+        suffix = '-d' if self.settings.build_type == "Debug" else ''
+        builtLibs = tools.collect_libs(self)
+        self.cpp_info.libs = sort_libs(correct_order=allLibs, libs=builtLibs, lib_suffix=suffix, reverse_result=True)
 
         if self.settings.os == "Windows":
             if self.settings.compiler == "Visual Studio":
