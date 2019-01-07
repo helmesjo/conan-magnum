@@ -220,9 +220,8 @@ class LibnameConan(ConanFile):
             var_value = "ON" if value_str == 'True' else "OFF" if value_str == 'False' else value_str 
             cmake.definitions[var_name] = var_value
 
-        for attr, _ in self.options.iteritems():
-            value = getattr(self.options, attr)
-            add_cmake_option(attr, value)
+        for option, value in self.options.items():
+            add_cmake_option(option, value)
 
         # Magnum uses suffix on the resulting 'lib'-folder when running cmake.install()
         # Set it explicitly to empty, else Magnum might set it implicitly (eg. to "64")
