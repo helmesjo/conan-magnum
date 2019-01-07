@@ -276,7 +276,7 @@ class LibnameConan(ConanFile):
             "MagnumWindowlessEglApplication",
             "MagnumGlxApplication" ,
             "MagnumWindowlessGlxApplication",
-            "MagnumSdl2Application"
+            "MagnumSdl2Application",
             "MagnumWindowlessSdl2Application",
             #4
             "MagnumDebugTools",
