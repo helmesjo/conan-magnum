@@ -1,5 +1,5 @@
 [![Download](https://api.bintray.com/packages/helmesjo/public-conan/magnum%3Ahelmesjo/images/download.svg) ](https://bintray.com/helmesjo/public-conan/magnum%3Ahelmesjo/_latestVersion)
-[![Build Status Travis](https://travis-ci.org/helmesjo/conan-magnum.svg?branch=stable%2F2018.10)](https://travis-ci.com/helmesjo/conan-magnum)
+[![Build Status Travis](https://travis-ci.org/helmesjo/conan-magnum.svg?branch=stable%2F2018.10)](https://travis-ci.org/helmesjo/conan-magnum)
 [![Build Status AppVeyor](https://ci.appveyor.com/api/projects/status/github/helmesjo/conan-magnum?branch=stable%2F2018.10&svg=true)](https://ci.appveyor.com/project/helmesjo/conan-magnum)
 
 ## Conan package recipe for [*magnum*](https://magnum.graphics)
