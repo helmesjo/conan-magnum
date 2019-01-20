@@ -245,18 +245,17 @@ class LibnameConan(ConanFile):
             "Magnum",
             "MagnumAnimation",
             "MagnumMath",
-            #2.1
-            "MagnumGL", # See "why" here: https://github.com/mosra/magnum/issues/304#issuecomment-455866205
-            #2.2
-            "MagnumTrade",
-            "MagnumMeshTools",
-            "MagnumSceneGraph",
-            "MagnumVk",
+            #2
             "MagnumAudio",
+            "MagnumGL",
+            "MagnumSceneGraph",
+            "MagnumTrade",
+            "MagnumVk",
             #3
+            "MagnumMeshTools",
             "MagnumPrimitives",
-            "MagnumShapes",
             "MagnumShaders",
+            "MagnumShapes",
             "MagnumTextureTools",
             "MagnumGlfwApplication",
             "MagnumGlutApplication",
