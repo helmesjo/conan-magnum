@@ -44,7 +44,6 @@ class LibnameConan(ConanFile):
         "build_deprecated": [True, False],
         "build_multithreaded": [True, False],
         "build_plugins_static": [True, False],
-        "build_tests": [True, False],
         "target_gl": [True, False],
         "target_gles": [True, False],
         "with_anyaudioimporter": [True, False],
@@ -87,7 +86,6 @@ class LibnameConan(ConanFile):
         "build_deprecated": True,
         "build_multithreaded": True,
         "build_plugins_static": False,
-        "build_tests": False,
         "target_gl": True,
         "target_gles": False,
         "with_anyaudioimporter": False,
@@ -188,9 +186,6 @@ class LibnameConan(ConanFile):
         if self.settings.os == 'Windows':
             del self.options.fPIC
 
-        if self.options.build_tests:
-            self.options.with_testsuite = True
-
     def configure(self):
         self.options['corrade'].add_option('build_deprecated', self.options.build_deprecated)
 
@@ -237,13 +232,6 @@ class LibnameConan(ConanFile):
     def build(self):
         cmake = self._configure_cmake()
         cmake.build()
-
-    # Fix later. Currently root contains no tests, and source_subfolder fails to run the test (can't find executables)
-#        if self.options.build_tests:
-            # self.output.info("Running {} tests".format(self.name))
-            # source_path = os.path.join(self._build_subfolder, self._source_subfolder)
-            # with tools.chdir(source_path):
-            #     self.run("ctest --build-config {}".format(self.settings.build_type))
 
     def package(self):
         self.copy(pattern="LICENSE", dst="licenses", src=self._source_subfolder)
