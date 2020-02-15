@@ -124,59 +124,9 @@ class LibnameConan(ConanFile):
     _build_subfolder = "build_subfolder"
 
     requires = (
-        "corrade/2019.10@helmesjo/stable"
+        "corrade/2019.10@helmesjo/stable",
+        "mesa/19.3.1@bincrafters/stable"
     )
-
-    def system_package_architecture(self):
-        if tools.os_info.with_apt:
-            if self.settings.arch == "x86":
-                return ':i386'
-            elif self.settings.arch == "x86_64":
-                return ':amd64'
-            elif self.settings.arch == "armv6" or self.settings.arch == "armv7":
-                return ':armel'
-            elif self.settings.arch == "armv7hf":
-                return ':armhf'
-            elif self.settings.arch == "armv8":
-                return ':arm64'
-
-        if tools.os_info.with_yum:
-            if self.settings.arch == "x86":
-                return '.i686'
-            elif self.settings.arch == 'x86_64':
-                return '.x86_64'
-        return ""
-
-    def system_requirements(self):
-        # Install required OpenGL stuff on linux
-        if tools.os_info.is_linux:
-            if tools.os_info.with_apt:
-                installer = tools.SystemPackageTool()
-
-                packages = []
-                if self.options.target_gl:
-                    packages.append("libgl1-mesa-dev")
-                if self.options.target_gles:
-                    packages.append("libgles1-mesa-dev")
-
-                arch_suffix = self.system_package_architecture()
-                for package in packages:
-                    installer.install("%s%s" % (package, arch_suffix))
-
-            elif tools.os_info.with_yum:
-                installer = tools.SystemPackageTool()
-
-                arch_suffix = self.system_package_architecture()
-                packages = []
-                if self.options.target_gl:
-                    packages.append("mesa-libGL-devel")
-                if self.options.target_gles:
-                    packages.append("mesa-libGLES-devel")
-
-                for package in packages:
-                    installer.install("%s%s" % (package, arch_suffix))
-            else:
-                self.output.warn("Could not determine package manager, skipping Linux system requirements installation.")
 
     def config_options(self):
         if self.settings.os == 'Windows':
@@ -192,9 +142,9 @@ class LibnameConan(ConanFile):
 
     def requirements(self):
         if self.options.with_sdl2application:
-            self.requires("sdl2/2.0.9@bincrafters/stable")
+            self.requires("sdl2/2.0.10@bincrafters/stable")
         if self.options.with_glfwapplication:
-            self.requires("glfw/3.3@bincrafters/stable")
+            self.requires("glfw/3.3.2@bincrafters/stable")
 
     def source(self):
         source_url = "https://github.com/mosra/magnum"
