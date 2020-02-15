@@ -131,6 +131,12 @@ class LibnameConan(ConanFile):
         if self.settings.os == 'Windows':
             del self.options.fPIC
 
+    def requirements(self):
+        if self.options.with_sdl2application:
+            self.requires("sdl2/2.0.9@bincrafters/stable")
+        if self.options.with_glfwapplication:
+            self.requires("glfw/3.3.2@bincrafters/stable")
+
     def configure(self):
         self.options['corrade'].add_option('build_deprecated', self.options.build_deprecated)
 
@@ -139,13 +145,22 @@ class LibnameConan(ConanFile):
         if self.options.shared:
             self.options['corrade'].add_option('shared', True)
 
-    def requirements(self):
-        if self.settings.os == "Linux":
-            "mesa/19.3.1@bincrafters/stable"
         if self.options.with_sdl2application:
-            self.requires("sdl2/2.0.9@bincrafters/stable")
-        if self.options.with_glfwapplication:
-            self.requires("glfw/3.3.2@bincrafters/stable")
+            self.options["sdl2"].x11 = True
+            self.options["sdl2"].sdl2main: True
+            #self.options["sdl2"].directx = False
+            self.options["sdl2"].alsa = False
+            self.options["sdl2"].jack = False
+            self.options["sdl2"].pulse = False
+            self.options["sdl2"].nas = False
+            self.options["sdl2"].xcursor = False
+            self.options["sdl2"].xinerama = False
+            self.options["sdl2"].xinput = False
+            self.options["sdl2"].xrandr = False
+            self.options["sdl2"].xscrnsaver = False
+            self.options["sdl2"].xshape = False
+            self.options["sdl2"].xvm = False
+            self.options["sdl2"].iconv = False
 
     def source(self):
         source_url = "https://github.com/mosra/magnum"
