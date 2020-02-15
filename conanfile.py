@@ -81,7 +81,7 @@ class LibnameConan(ConanFile):
     default_options = {
         "shared": False, 
         "fPIC": True,
-        "build_deprecated": True,
+        "build_deprecated": False,
         "build_multithreaded": True,
         "build_plugins_static": False,
         "target_gl": True,
@@ -143,7 +143,7 @@ class LibnameConan(ConanFile):
         if self.settings.os == "Linux":
             "mesa/19.3.1@bincrafters/stable"
         if self.options.with_sdl2application:
-            self.requires("sdl2/2.0.10@bincrafters/stable")
+            self.requires("sdl2/2.0.9@bincrafters/stable")
         if self.options.with_glfwapplication:
             self.requires("glfw/3.3.2@bincrafters/stable")
 
