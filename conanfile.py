@@ -124,8 +124,7 @@ class LibnameConan(ConanFile):
     _build_subfolder = "build_subfolder"
 
     requires = (
-        "corrade/2019.10@helmesjo/stable",
-        "mesa/19.3.1@bincrafters/stable"
+        "corrade/2019.10@helmesjo/stable"
     )
 
     def config_options(self):
@@ -141,6 +140,8 @@ class LibnameConan(ConanFile):
             self.options['corrade'].add_option('shared', True)
 
     def requirements(self):
+        if self.settings.os == "Linux":
+            "mesa/19.3.1@bincrafters/stable"
         if self.options.with_sdl2application:
             self.requires("sdl2/2.0.10@bincrafters/stable")
         if self.options.with_glfwapplication:
