@@ -145,22 +145,51 @@ class LibnameConan(ConanFile):
         if self.options.shared:
             self.options['corrade'].add_option('shared', True)
 
-        if self.options.with_sdl2application:
-            self.options["sdl2"].x11 = True
-            self.options["sdl2"].sdl2main: True
-            #self.options["sdl2"].directx = False
+        if self.options["sdl2"].directx:
+            self.options["sdl2"].directx = False
+        if self.options["sdl2"].alsa:
             self.options["sdl2"].alsa = False
+        if self.options["sdl2"].jack:
             self.options["sdl2"].jack = False
+        if self.options["sdl2"].pulse:
             self.options["sdl2"].pulse = False
+        if self.options["sdl2"].nas:
             self.options["sdl2"].nas = False
+        if self.options["sdl2"].esd:
+            self.options["sdl2"].esd = False
+        if self.options["sdl2"].arts:
+            self.options["sdl2"].arts = False
+        if self.options["sdl2"].x11:
+            self.options["sdl2"].x11 = False
+        if self.options["sdl2"].xcursor:
             self.options["sdl2"].xcursor = False
+        if self.options["sdl2"].xinerama:
             self.options["sdl2"].xinerama = False
+        if self.options["sdl2"].xinput:
             self.options["sdl2"].xinput = False
+        if self.options["sdl2"].xrandr:
             self.options["sdl2"].xrandr = False
+        if self.options["sdl2"].xscrnsaver:
             self.options["sdl2"].xscrnsaver = False
+        if self.options["sdl2"].xshape:
             self.options["sdl2"].xshape = False
+        if self.options["sdl2"].xvm:
             self.options["sdl2"].xvm = False
+        if self.options["sdl2"].wayland:
+            self.options["sdl2"].wayland = False
+        if self.options["sdl2"].directfb:
+            self.options["sdl2"].directfb = False
+        if self.options["sdl2"].iconv:
             self.options["sdl2"].iconv = False
+        if self.options["sdl2"].video_rpi:
+            self.options["sdl2"].video_rpi = False
+        if self.options["sdl2"].sdl2main:
+            self.options["sdl2"].sdl2main = False
+
+        if self.options.with_sdl2application:
+            self.options["sdl2"].sdl2main = True
+        if self.settings.os == "Linux" and tools.os_info.is_linux:
+            self.options["sdl2"].x11 = True
 
     def source(self):
         source_url = "https://github.com/mosra/magnum"
