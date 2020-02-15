@@ -188,7 +188,7 @@ class LibnameConan(ConanFile):
 
         if self.options.with_sdl2application:
             self.options["sdl2"].sdl2main = True
-        if self.settings.os == "Linux" and tools.os_info.is_linux:
+        if self.settings.os == "Linux":
             self.options["sdl2"].x11 = True
 
     def source(self):
