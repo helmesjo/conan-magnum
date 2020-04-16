@@ -124,7 +124,7 @@ class LibnameConan(ConanFile):
     _build_subfolder = "build_subfolder"
 
     requires = (
-        "corrade/2019.10@helmesjo/stable"
+        "corrade/2019.10"
     )
 
     def config_options(self):
@@ -138,8 +138,6 @@ class LibnameConan(ConanFile):
             self.requires("glfw/3.3.2@bincrafters/stable")
 
     def configure(self):
-        self.options['corrade'].add_option('build_deprecated', self.options.build_deprecated)
-
         # To fix issue with resource management, see here:
         # https://github.com/mosra/magnum/issues/304#issuecomment-451768389
         if self.options.shared:
