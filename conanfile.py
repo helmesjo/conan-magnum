@@ -270,7 +270,9 @@ class LibnameConan(ConanFile):
         # Sort all built libs according to above, and reverse result for correct link order
         suffix = '-d' if self.settings.build_type == "Debug" else ''
         builtLibs = tools.collect_libs(self)
+        print("Found libs: ", builtLibs)
         self.cpp_info.libs = sort_libs(correct_order=allLibs, libs=builtLibs, lib_suffix=suffix, reverse_result=True)
+        print("Link order: ", self.cpp_info.libs)
 
         if self.settings.os == "Windows":
             if self.settings.compiler == "Visual Studio":
