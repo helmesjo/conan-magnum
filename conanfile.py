@@ -124,7 +124,7 @@ class LibnameConan(ConanFile):
     _build_subfolder = "build_subfolder"
 
     requires = (
-        "corrade/2019.10@helmesjo/stable"
+        "corrade/2019.10"
     )
 
     def config_options(self):
