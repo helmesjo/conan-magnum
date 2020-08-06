@@ -124,7 +124,7 @@ class LibnameConan(ConanFile):
     _build_subfolder = "build_subfolder"
 
     requires = (
-        "corrade/2019.10"
+        "corrade/2019.10@helmesjo/stable"
     )
 
     def config_options(self):
@@ -217,11 +217,6 @@ class LibnameConan(ConanFile):
 
         add_cmake_option("BUILD_STATIC", not self.options.shared)
         add_cmake_option("BUILD_STATIC_PIC", not self.options.shared and self.options.get_safe("fPIC"))
-
-        if self.settings.compiler == 'Visual Studio':
-            add_cmake_option("CORRADE_MSVC2015_COMPATIBILITY", int(self.settings.compiler.version.value) == 14)
-            add_cmake_option("CORRADE_MSVC2017_COMPATIBILITY", int(self.settings.compiler.version.value) == 15)
-            add_cmake_option("CORRADE_MSVC2019_COMPATIBILITY", int(self.settings.compiler.version.value) == 16)
 
         cmake.configure(build_folder=self._build_subfolder)
 
