@@ -128,68 +128,25 @@ class LibnameConan(ConanFile):
     )
 
     def config_options(self):
-        if self.settings.os == 'Windows':
+        if self.settings.os == "Windows":
             del self.options.fPIC
+
+    def configure(self):
+        # To fix issue with resource management, see here:
+        # https://github.com/mosra/magnum/issues/304#issuecomment-451768389
+        if self.options.shared:
+            self.options['corrade'].shared = True
 
     def requirements(self):
         if self.options.with_sdl2application:
             self.requires("sdl2/2.0.9@bincrafters/stable")
-        if self.options.with_glfwapplication:
-            self.requires("glfw/3.3.2@bincrafters/stable")
-
-    def configure_options(self):
-        # To fix issue with resource management, see here:
-        # https://github.com/mosra/magnum/issues/304#issuecomment-451768389
-        if self.options.shared:
-            self.options['corrade'].add_option('shared', True)
-
-        if self.options.with_sdl2application:
-            # Default all to false
-            if self.options["sdl2"].directx:
-                self.options["sdl2"].directx = False
-            if self.options["sdl2"].alsa:
-                self.options["sdl2"].alsa = False
-            if self.options["sdl2"].jack:
-                self.options["sdl2"].jack = False
-            if self.options["sdl2"].pulse:
-                self.options["sdl2"].pulse = False
-            if self.options["sdl2"].nas:
-                self.options["sdl2"].nas = False
-            if self.options["sdl2"].esd:
-                self.options["sdl2"].esd = False
-            if self.options["sdl2"].arts:
-                self.options["sdl2"].arts = False
-            if self.options["sdl2"].x11:
-                self.options["sdl2"].x11 = False
-            if self.options["sdl2"].xcursor:
-                self.options["sdl2"].xcursor = False
-            if self.options["sdl2"].xinerama:
-                self.options["sdl2"].xinerama = False
-            if self.options["sdl2"].xinput:
-                self.options["sdl2"].xinput = False
-            if self.options["sdl2"].xrandr:
-                self.options["sdl2"].xrandr = False
-            if self.options["sdl2"].xscrnsaver:
-                self.options["sdl2"].xscrnsaver = False
-            if self.options["sdl2"].xshape:
-                self.options["sdl2"].xshape = False
-            if self.options["sdl2"].xvm:
-                self.options["sdl2"].xvm = False
-            if self.options["sdl2"].wayland:
-                self.options["sdl2"].wayland = False
-            if self.options["sdl2"].directfb:
-                self.options["sdl2"].directfb = False
-            if self.options["sdl2"].iconv:
-                self.options["sdl2"].iconv = False
-            if self.options["sdl2"].video_rpi:
-                self.options["sdl2"].video_rpi = False
-            if self.options["sdl2"].sdl2main:
-                self.options["sdl2"].sdl2main = False
-
             # Custom options
             self.options["sdl2"].sdl2main = True
             if self.settings.os == "Linux":
                 self.options["sdl2"].x11 = True
+
+        if self.options.with_glfwapplication:
+            self.requires("glfw/3.3.2@bincrafters/stable")
 
     def source(self):
         source_url = "https://github.com/mosra/magnum"
@@ -280,3 +237,11 @@ class LibnameConan(ConanFile):
                 self.cpp_info.exelinkflags.append("-framework OpenGL")
             elif not self.options.shared:
                 self.cpp_info.libs.append("GL")
+
+        if self.options.shared:
+            if self.settings.os == "Windows":
+                self.env_info.PATH.append(os.path.join(self.package_folder, "bin"))
+            if self.settings.os == "Linux":
+                self.env_info.LD_LIBRARY_PATH.append(os.path.join(self.package_folder, "lib"))
+            if self.settings.os == "Macos":
+                self.env_info.DYLD_LIBRARY_PATH.append(os.path.join(self.package_folder, "lib"))
