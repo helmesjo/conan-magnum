@@ -188,19 +188,22 @@ class LibnameConan(ConanFile):
         cmake = self._configure_cmake()
         cmake.install()
 
-        share_cmake = os.path.join(self.package_folder, "share", "cmake", "Magnum")
-        self.copy("MagnumConfig.cmake", src=share_cmake, dst=os.path.join(self.package_folder, "lib", "cmake", "Magnum"))
-        self.copy("FindMagnum.cmake", src=share_cmake, dst=os.path.join(self.package_folder, "lib", "cmake", "Magnum"))
-        tools.rmdir(os.path.join(self.package_folder, "share"))
+        # This didn't work correctly in combination with generator 'cmake_find_package', and don't wanna spend time on it now.
+        # Will use the conan-generated find-script instead (which works).
+        
+        #share_cmake = os.path.join(self.package_folder, "share", "cmake", "Magnum")
+        #self.copy("MagnumConfig.cmake", src=share_cmake, dst=os.path.join(self.package_folder, "lib", "cmake", "Magnum"))
+        #self.copy("FindMagnum.cmake", src=share_cmake, dst=os.path.join(self.package_folder, "lib", "cmake", "Magnum"))
+        #tools.rmdir(os.path.join(self.package_folder, "share"))
 
     def package_info(self):
-        self.cpp_info.names["cmake_find_package"] = "Magnum"
-        self.cpp_info.names["cmake_find_package_multi"] = "Magnum"
+        #self.cpp_info.names["cmake_find_package"] = "Magnum"
+        #self.cpp_info.names["cmake_find_package_multi"] = "Magnum"
 
-        self.cpp_info.includedirs.append("include")
-        self.cpp_info.builddirs.append(os.path.join("lib", "cmake", "Magnum"))
-        self.cpp_info.build_modules.append(os.path.join("lib", "cmake", "Magnum", "FindMagnum.cmake"))
-        self.cpp_info.build_modules.append(os.path.join("lib", "cmake", "Magnum", "MagnumConfig.cmake"))
+        #self.cpp_info.includedirs.append("include")
+        #self.cpp_info.builddirs.append(os.path.join("lib", "cmake", "Magnum"))
+        #self.cpp_info.build_modules.append(os.path.join("lib", "cmake", "Magnum", "FindMagnum.cmake"))
+        #self.cpp_info.build_modules.append(os.path.join("lib", "cmake", "Magnum", "MagnumConfig.cmake"))
 
         # See dependency order here: https://doc.magnum.graphics/magnum/custom-buildsystems.html
         allLibs = [
