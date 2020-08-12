@@ -22,7 +22,7 @@ def sort_libs(correct_order, libs, lib_suffix='', reverse_result=False):
 
 class LibnameConan(ConanFile):
     name = "magnum"
-    version = "2019.10"
+    version = "2020.06"
     description =   "Magnum — Lightweight and modular C++11/C++14 \
                     graphics middleware for games and data visualization"
     # topics can get used for searches, GitHub topics, Bintray tags etc. Add here keywords about the library
@@ -124,7 +124,7 @@ class LibnameConan(ConanFile):
     _build_subfolder = "build_subfolder"
 
     requires = (
-        "corrade/2019.10@helmesjo/stable"
+        "corrade/2020.06@helmesjo/stable"
     )
 
     def config_options(self):
@@ -164,16 +164,21 @@ class LibnameConan(ConanFile):
             value_str = "{}".format(value)
             var_value = "ON" if value_str == 'True' else "OFF" if value_str == 'False' else value_str 
             cmake.definitions[var_name] = var_value
+            print("{0}={1}".format(var_name, var_value))
 
         for option, value in self.options.items():
             add_cmake_option(option, value)
+
+        add_cmake_option("BUILD_STATIC", not self.options.shared)
+        add_cmake_option("BUILD_STATIC_PIC", not self.options.shared and self.options.get_safe("fPIC") == True)
 
         # Magnum uses suffix on the resulting 'lib'-folder when running cmake.install()
         # Set it explicitly to empty, else Magnum might set it implicitly (eg. to "64")
         add_cmake_option("LIB_SUFFIX", "")
 
-        add_cmake_option("BUILD_STATIC", not self.options.shared)
-        add_cmake_option("BUILD_STATIC_PIC", not self.options.shared and self.options.get_safe("fPIC"))
+        if self.settings.os == "Windows":
+            cmake.definitions["-DNOMINMAX"] = "1"
+            #cmake.cpp_defines.append("NOMINMAX") # Windows macros cause issues
 
         cmake.configure(build_folder=self._build_subfolder)
 
