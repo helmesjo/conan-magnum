@@ -176,10 +176,6 @@ class LibnameConan(ConanFile):
         # Set it explicitly to empty, else Magnum might set it implicitly (eg. to "64")
         add_cmake_option("LIB_SUFFIX", "")
 
-        if self.settings.os == "Windows":
-            cmake.definitions["-DNOMINMAX"] = "1"
-            #cmake.cpp_defines.append("NOMINMAX") # Windows macros cause issues
-
         cmake.configure(build_folder=self._build_subfolder)
 
         return cmake
