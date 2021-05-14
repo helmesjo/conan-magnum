@@ -1,14 +1,9 @@
 build: false
 
 environment:
-    PYTHON: "C:\\Python37"
+    CONAN_CHANNEL: "stable"
 
-    CONAN_USERNAME: "helmesjo"
-    CONAN_LOGIN_USERNAME: "helmesjo"
-    CONAN_CHANNEL: "stable" # because of bug in conan-package-tools, we always upload packages as stable
-    CONAN_UPLOAD: "https://api.bintray.com/conan/helmesjo/public-conan"
-    CONAN_REMOTES: "https://api.bintray.com/conan/helmesjo/public-conan,https://api.bintray.com/conan/bincrafters/public-conan"
-    CONAN_UPLOAD_ONLY_WHEN_STABLE: 0
+    PYTHON: "C:\\Python37"
 
     CONAN_TOTAL_PAGES: 2
 
@@ -28,9 +23,10 @@ environment:
 
 install:
   - set PATH=%PATH%;%PYTHON%/Scripts/
-  - pip.exe install conan --upgrade
-  - pip.exe install conan_package_tools bincrafters_package_tools
+  - pip3 install conan --upgrade
+  - pip3 install conan_package_tools bincrafters_package_tools
   - conan user # It creates the conan data directory
 
 test_script:
-  - python build.py
+  - "%PYTHON%/python.exe --version"
+  - "%PYTHON%/python.exe .ci/build.py"
