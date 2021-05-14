@@ -1,15 +1,10 @@
 env:
   global:
-    - CONAN_USERNAME: "helmesjo"
-    - CONAN_LOGIN_USERNAME: "helmesjo"
-    - CONAN_CHANNEL: "stable" # because of bug in conan-package-tools, we always upload packages as stable
-    - CONAN_UPLOAD: "https://api.bintray.com/conan/helmesjo/public-conan"
-    - CONAN_REMOTES: "https://api.bintray.com/conan/helmesjo/public-conan,https://api.bintray.com/conan/bincrafters/public-conan"
-    - CONAN_UPLOAD_ONLY_WHEN_STABLE: 0
+    - CONAN_CHANNEL: "stable"
 
 linux: &linux
   os: linux
-  dist: xenial
+  dist: bionic
   language: python
   python: "3.7"
   services:
