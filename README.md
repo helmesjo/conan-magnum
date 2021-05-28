@@ -94,7 +94,7 @@ The following command both runs all the steps of the conan file, and publishes t
 
 ## Add Remote
 
-    $ conan remote add helmesjo "https://api.bintray.com/conan/helmesjo/public-conan"
+    $ conan remote add helmesjo "https://helmesjo.jfrog.io/artifactory/api/conan/public-conan"
 
 
 ## Conan Recipe License
